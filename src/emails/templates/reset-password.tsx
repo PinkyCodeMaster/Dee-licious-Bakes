@@ -1,6 +1,7 @@
 import { Section, Text } from "@react-email/components";
 import * as React from "react";
 import { EmailLayout, EmailHeader, EmailButton, EmailFooter } from "../components";
+import { emailStyles } from "../styles";
 import type { ResetPasswordEmailData } from "../types";
 
 interface ResetPasswordEmailProps {
@@ -19,11 +20,11 @@ export const ResetPasswordEmail: React.FC<ResetPasswordEmailProps> = ({
         subtitle="We received a request to reset your password"
       />
       
-      <Section style={section}>
-        <Text style={text}>
+      <Section style={emailStyles.section}>
+        <Text style={emailStyles.text}>
           Hello,
         </Text>
-        <Text style={text}>
+        <Text style={emailStyles.text}>
           We received a request to reset the password for your account ({userEmail}). 
           Click the button below to create a new password.
         </Text>
@@ -32,27 +33,27 @@ export const ResetPasswordEmail: React.FC<ResetPasswordEmailProps> = ({
           Reset Password
         </EmailButton>
         
-        <Text style={securityText}>
+        <Text style={emailStyles.sectionTitle}>
           <strong>Security Information:</strong>
         </Text>
-        <Text style={smallText}>
+        <Text style={emailStyles.smallText}>
           • This reset link will expire in {expirationTime}
         </Text>
-        <Text style={smallText}>
+        <Text style={emailStyles.smallText}>
           • If you didn&apos;t request this reset, you can safely ignore this email
         </Text>
-        <Text style={smallText}>
+        <Text style={emailStyles.smallText}>
           • Your password won&apos;t change until you create a new one using the link above
         </Text>
         
-        <Text style={text}>
+        <Text style={emailStyles.text}>
           If the button doesn&apos;t work, you can copy and paste this link into your browser:
         </Text>
-        <Text style={linkText}>
+        <Text style={emailStyles.linkText}>
           {resetUrl}
         </Text>
         
-        <Text style={text}>
+        <Text style={emailStyles.text}>
           If you need a new reset link after this one expires, you can request another one 
           from the login page.
         </Text>
@@ -64,39 +65,3 @@ export const ResetPasswordEmail: React.FC<ResetPasswordEmailProps> = ({
 };
 
 export default ResetPasswordEmail;
-
-const section = {
-  padding: "24px 0",
-};
-
-const text = {
-  color: "#333333",
-  fontSize: "16px",
-  lineHeight: "1.5",
-  margin: "0 0 16px 0",
-};
-
-const securityText = {
-  color: "#333333",
-  fontSize: "16px",
-  lineHeight: "1.5",
-  margin: "24px 0 8px 0",
-};
-
-const smallText = {
-  color: "#666666",
-  fontSize: "14px",
-  lineHeight: "1.4",
-  margin: "0 0 4px 0",
-};
-
-const linkText = {
-  color: "#666666",
-  fontSize: "14px",
-  lineHeight: "1.4",
-  margin: "8px 0 16px 0",
-  wordBreak: "break-all" as const,
-  backgroundColor: "#f5f5f5",
-  padding: "8px",
-  borderRadius: "4px",
-};

@@ -1,8 +1,10 @@
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { ThemeProvider } from "@/components/theme/theme-provider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { extractRouterConfig } from "uploadthing/server";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import "./globals.css";
@@ -35,6 +37,8 @@ export default function RootLayout({
           <main className="min-h-screen">
             {children}
           </main>
+          <Analytics />
+          <SpeedInsights />
           <Toaster closeButton expand position="top-center" richColors />
         </ThemeProvider>
       </body>
