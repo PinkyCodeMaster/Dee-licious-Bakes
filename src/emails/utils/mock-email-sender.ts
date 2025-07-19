@@ -18,7 +18,7 @@ export class MockEmailSender {
    */
   static async sendEmail(params: SendEmailParams): Promise<EmailSendResult> {
     const { to, template, data } = params;
-    
+
     console.log('📧 [MOCK EMAIL SENDER] Email would be sent:', {
       to,
       template,

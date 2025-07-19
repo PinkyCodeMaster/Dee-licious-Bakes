@@ -52,18 +52,3 @@ export const verification = pgTable("verification", {
 	createdAt: timestamp('created_at').$defaultFn(() => /* @__PURE__ */ new Date()),
 	updatedAt: timestamp('updated_at').$defaultFn(() => /* @__PURE__ */ new Date())
 });
-
-export const message = pgTable("message", {
-	id: text('id').primaryKey(),
-	subject: text('subject').notNull(),
-	content: text('content').notNull(),
-	sender: text('sender').notNull(),
-	senderAvatar: text('sender_avatar'),
-	recipientId: text('recipient_id').references(() => user.id, { onDelete: 'cascade' }),
-	status: text('status').$default(() => 'unread').notNull(), // 'read', 'unread', 'archived'
-	priority: text('priority').$default(() => 'normal').notNull(), // 'low', 'normal', 'high'
-	type: text('type').$default(() => 'user').notNull(), // 'system', 'user', 'admin'
-	isDeleted: boolean('is_deleted').$default(() => false).notNull(),
-	createdAt: timestamp('created_at').$defaultFn(() => /* @__PURE__ */ new Date()).notNull(),
-	updatedAt: timestamp('updated_at').$defaultFn(() => /* @__PURE__ */ new Date()).notNull()
-});
