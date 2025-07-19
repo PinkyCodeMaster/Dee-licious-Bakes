@@ -2,33 +2,32 @@ import { Section, Text } from "@react-email/components";
 import * as React from "react";
 import { EmailLayout, EmailHeader, EmailButton, EmailFooter } from "../components";
 import { emailStyles } from "../styles";
+import { BAKERY_BRAND } from "@/lib/constants/brand";
 import type { VerifyEmailData } from "../types";
 
-interface VerifyEmailProps {
-  data: VerifyEmailData;
-}
-
-export const VerifyEmailEmail: React.FC<VerifyEmailProps> = ({
-  data,
+export const VerifyEmailEmail: React.FC<VerifyEmailData> = ({
+  verificationUrl,
+  userEmail,
+  userName,
+  companyName = BAKERY_BRAND.name,
+  supportEmail = BAKERY_BRAND.email,
 }) => {
-  const { verificationUrl, userEmail, userName, companyName, supportEmail } = data;
-
   return (
-    <EmailLayout preview="Verify your email address">
+    <EmailLayout preview={`Verify your email address - ${BAKERY_BRAND.name}`}>
       <EmailHeader 
         title="Welcome! Please verify your email" 
-        subtitle="Just one more step to get started"
+        subtitle="Just one more step to get started with us"
       />
       
       <Section style={emailStyles.section}>
-        <Text style={emailStyles.text}>
+        <Text style={emailStyles.welcomeText}>
           {userName ? `Hello ${userName},` : "Hello,"}
         </Text>
         <Text style={emailStyles.text}>
-          Welcome to our platform! We&apos;re excited to have you on board.
+          Welcome to {BAKERY_BRAND.name}! We&apos;re excited to have you join our sweet community.
         </Text>
         <Text style={emailStyles.text}>
-          To complete your account setup and start using all features, please verify 
+          To complete your account setup and start exploring our delicious offerings, please verify 
           your email address ({userEmail}) by clicking the button below.
         </Text>
         
@@ -36,18 +35,20 @@ export const VerifyEmailEmail: React.FC<VerifyEmailProps> = ({
           Verify Email Address
         </EmailButton>
         
-        <Text style={emailStyles.sectionTitle}>
-          <strong>Account Activation:</strong>
-        </Text>
-        <Text style={emailStyles.smallText}>
-          • Your account is currently inactive until email verification is complete
-        </Text>
-        <Text style={emailStyles.smallText}>
-          • Once verified, you&apos;ll have full access to all platform features
-        </Text>
-        <Text style={emailStyles.smallText}>
-          • This verification link is secure and unique to your account
-        </Text>
+        <Section style={emailStyles.infoSection}>
+          <Text style={emailStyles.sectionTitle}>
+            Account Activation:
+          </Text>
+          <Text style={emailStyles.bulletText}>
+            • Your account is currently inactive until email verification is complete
+          </Text>
+          <Text style={emailStyles.bulletText}>
+            • Once verified, you&apos;ll have full access to browse our cake gallery and place orders
+          </Text>
+          <Text style={emailStyles.bulletText}>
+            • This verification link is secure and unique to your account
+          </Text>
+        </Section>
         
         <Text style={emailStyles.text}>
           If the button doesn&apos;t work, you can copy and paste this link into your browser:

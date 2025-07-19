@@ -1,4 +1,4 @@
-import { sendPasswordResetEmail, sendEmailVerification, sendEmailChangeVerification, sendAccountDeletionVerification, sendAccountDeletionConfirmation, } from "../emails/utils/simple-email-sender";
+import { sendPasswordResetEmail, sendEmailVerification, sendEmailChangeVerification, sendAccountDeletionVerification, sendAccountDeletionConfirmation, } from "../lib/email/unified-email-service";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, anonymous } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";

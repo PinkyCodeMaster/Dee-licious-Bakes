@@ -13,9 +13,7 @@ const navigation = [
     items: [
       { name: "Overview", href: "/account", icon: Home },
       { name: "Profile", href: "/account/profile", icon: userIcon },
-      { name: "Messages", href: "/account/messages", icon: MessageSquare },
-      { name: "Orders", href: "/account/orders", icon: ShoppingBag },
-      { name: "Subscriptions", href: "/account/subscriptions", icon: CreditCard },
+      { name: "My Orders", href: "/account/orders", icon: ShoppingBag },
     ]
   }
 ];

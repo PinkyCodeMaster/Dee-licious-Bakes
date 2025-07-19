@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { BAKERY_EMAIL } from "@/lib/constants/brand";
 import { ShieldX, Mail, Clock } from "lucide-react";
 import Link from "next/link";
 
@@ -96,7 +97,7 @@ export default async function BannedPage() {
 
             <div className="space-y-3">
               <Button asChild className="w-full" variant="outline">
-                <Link href="mailto:support@example.com">
+                <Link href={`mailto:${BAKERY_EMAIL}`}>
                   <Mail className="mr-2 h-4 w-4" />
                   Contact Support
                 </Link>

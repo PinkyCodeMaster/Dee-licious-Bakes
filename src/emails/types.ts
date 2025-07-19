@@ -43,7 +43,6 @@ export interface AccountDeletedData extends BaseEmailData {
 // Cake newsletter welcome email data
 export interface CakeWelcomeEmailData extends BaseEmailData {
   firstName?: string;
-  email: string;
   unsubscribeUrl: string;
 }
 

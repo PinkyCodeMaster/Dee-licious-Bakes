@@ -17,13 +17,11 @@ interface AdminSidebarProps {
 
 const navigation = [
   {
-    title: "Administration",
+    title: "Bakery Management",
     items: [
       { name: "Dashboard", href: "/admin", icon: BarChart3 },
-      { name: "Users", href: "/admin/users", icon: Users },
-      { name: "Messages", href: "/admin/messages", icon: MessageSquare },
+      { name: "Customers", href: "/admin/users", icon: Users },
       { name: "Orders", href: "/admin/orders", icon: ShoppingBag },
-      { name: "Subscriptions", href: "/admin/subscriptions", icon: CreditCard },
     ]
   },
   {

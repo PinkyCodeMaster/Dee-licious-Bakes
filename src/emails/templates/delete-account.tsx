@@ -2,6 +2,7 @@ import { Section, Text } from "@react-email/components";
 import * as React from "react";
 import { EmailLayout, EmailHeader, EmailButton, EmailFooter } from "../components";
 import { emailStyles } from "../styles";
+import { BAKERY_BRAND } from "@/lib/constants/brand";
 import type { DeleteAccountData } from "../types";
 
 interface DeleteAccountProps {
@@ -9,7 +10,13 @@ interface DeleteAccountProps {
 }
 
 export const DeleteAccountEmail: React.FC<DeleteAccountProps> = ({ data, }) => {
-  const { confirmationUrl, userEmail, userName, companyName, supportEmail } = data;
+  const { 
+    confirmationUrl, 
+    userEmail, 
+    userName, 
+    companyName = BAKERY_BRAND.name, 
+    supportEmail = BAKERY_BRAND.email 
+  } = data;
 
   return (
     <EmailLayout preview="Confirm account deletion">
@@ -23,7 +30,7 @@ export const DeleteAccountEmail: React.FC<DeleteAccountProps> = ({ data, }) => {
           {userName ? `Hello ${userName},` : "Hello,"}
         </Text>
         <Text style={emailStyles.text}>
-          We received a request to permanently delete your account ({userEmail}).
+          We received a request to permanently delete your {BAKERY_BRAND.name} account ({userEmail}).
         </Text>
 
         <Text style={emailStyles.warningText}>

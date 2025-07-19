@@ -2,9 +2,10 @@
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, } from "@/components/ui/sheet";
-import { Menu, User, Settings, LogOut, MessageSquare, Shield, Home, X, Info } from "lucide-react";
+import { Menu, User, Settings, LogOut, MessageSquare, Shield, Home, X, Info, Cake } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ModeToggle } from "@/components/theme/theme-toggle";
+import { BAKERY_NAME } from "@/lib/constants/brand";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useState, useEffect } from "react";
@@ -71,14 +72,14 @@ export function SiteHeader({ hideOnLanding = false }: SiteHeaderProps) {
 
     const navigationItems = [
         { href: "/", label: "Home", icon: Home },
+        { href: "/cakes", label: "Cakes", icon: Cake },
         { href: "/about", label: "About", icon: Info }
     ];
 
     const userMenuItems = user ? [
-        { href: "/account", label: "Account", icon: User },
-        { href: "/account/profile", label: "Profile", icon: Settings },
-        { href: "/account/messages", label: "Messages", icon: MessageSquare },
-        ...(user.role === "admin" ? [{ href: "/admin", label: "Admin", icon: Shield }] : []),
+        { href: "/account", label: "My Account", icon: User },
+        { href: "/account/orders", label: "My Orders", icon: Settings },
+        ...(user.role === "admin" ? [{ href: "/admin", label: "Bakery Admin", icon: Shield }] : []),
     ] : [];
 
     if (hideOnLanding) {
@@ -91,10 +92,10 @@ export function SiteHeader({ hideOnLanding = false }: SiteHeaderProps) {
                 {/* Logo */}
                 <div className="flex items-center space-x-4">
                     <Link href="/" className="flex items-center space-x-2">
-                        <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-                            <span className="text-primary-foreground font-bold text-sm">A</span>
+                        <div className="h-8 w-8 rounded-lg bg-pink-500 flex items-center justify-center">
+                            <Cake className="h-4 w-4 text-white" />
                         </div>
-                        <span className="hidden font-bold sm:inline-block">My App</span>
+                        <span className="hidden font-bold sm:inline-block text-pink-600 dark:text-pink-400">{BAKERY_NAME}</span>
                     </Link>
                 </div>
 
@@ -181,7 +182,7 @@ export function SiteHeader({ hideOnLanding = false }: SiteHeaderProps) {
                         <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                             <SheetHeader>
                                 <SheetTitle className="flex items-center justify-between">
-                                    <span>Menu</span>
+                                    <span>{BAKERY_NAME}</span>
                                     <Button
                                         variant="ghost"
                                         size="icon"
@@ -191,7 +192,7 @@ export function SiteHeader({ hideOnLanding = false }: SiteHeaderProps) {
                                     </Button>
                                 </SheetTitle>
                                 <SheetDescription>
-                                    Navigate through the application
+                                    Navigate through our bakery website
                                 </SheetDescription>
                             </SheetHeader>
 

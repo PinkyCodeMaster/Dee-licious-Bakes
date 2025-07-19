@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import { categories, products } from '@/db/schema';
 import { eq, and, isNull, count, asc } from 'drizzle-orm';
+import { BAKERY_CATEGORIES, getCategoryBySlug as getBakeryCategory } from './bakery-categories';
 
 export interface CategoryWithStats {
   id: string;
@@ -152,6 +153,20 @@ export class CategoryQueryUtils {
   }
 
   /**
+   * Get bakery-specific categories for navigation and filtering
+   */
+  static getBakeryCategories() {
+    return BAKERY_CATEGORIES;
+  }
+
+  /**
+   * Get bakery category information by slug
+   */
+  static getBakeryCategoryBySlug(slug: string) {
+    return getBakeryCategory(slug);
+  }
+
+  /**
    * Get subcategories of a parent category
    */
   static async getSubcategories(parentId: string): Promise<CategoryWithStats[]> {
@@ -281,4 +296,6 @@ export const categoryQueries = {
   getBySlug: CategoryQueryUtils.getCategoryBySlug,
   getSubcategories: CategoryQueryUtils.getSubcategories,
   getBreadcrumb: CategoryQueryUtils.getCategoryBreadcrumb,
+  getBakeryCategories: CategoryQueryUtils.getBakeryCategories,
+  getBakeryCategoryBySlug: CategoryQueryUtils.getBakeryCategoryBySlug,
 };

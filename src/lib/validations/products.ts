@@ -115,7 +115,7 @@ export const updateProductImageSchema = productImageSchema.partial().omit({
   id: true,
 });
 
-// Tag validation schemas
+// Tag validation schemas - updated for bakery use
 export const tagSchema = z.object({
   id: z.string().min(1, "Tag ID is required"),
   name: z.string().min(1, "Tag name is required").max(100, "Tag name too long"),
@@ -131,7 +131,7 @@ export const updateTagSchema = tagSchema.partial().omit({
   id: true,
 });
 
-// Allergen validation schemas
+// Allergen validation schemas - updated for bakery allergens
 export const allergenSchema = z.object({
   id: z.string().min(1, "Allergen ID is required"),
   name: z.string().min(1, "Allergen name is required").max(100, "Allergen name too long"),
@@ -212,4 +212,38 @@ export const bulkProductUpdateSchema = z.object({
   }).refine(data => Object.keys(data).length > 0, {
     message: "At least one field must be updated",
   }),
+});
+
+// Bakery-specific validation schemas
+export const cakeOrderSchema = z.object({
+  size: z.enum(['6-inch', '8-inch', '10-inch', '12-inch', 'sheet-cake']),
+  flavor: z.string().min(1, "Flavor is required"),
+  frosting: z.string().min(1, "Frosting type is required"),
+  filling: z.string().optional(),
+  decorations: z.string().max(500, "Decoration description too long").optional(),
+  customMessage: z.string().max(100, "Custom message too long").optional(),
+  servingCount: z.number().int().min(1, "Must serve at least 1 person"),
+  deliveryDate: z.date().min(new Date(Date.now() + 24 * 60 * 60 * 1000), "Delivery date must be at least 24 hours from now"),
+  specialInstructions: z.string().max(1000, "Special instructions too long").optional(),
+});
+
+export const customOrderRequestSchema = z.object({
+  productType: z.enum(['cake', 'cupcakes', 'cookies', 'pastries', 'other']),
+  title: z.string().min(1, "Title is required").max(255, "Title too long"),
+  description: z.string().min(10, "Please provide more details").max(2000, "Description too long"),
+  servingCount: z.number().int().min(1, "Must serve at least 1 person").optional(),
+  budgetRange: z.enum(['under-50', '50-100', '100-200', '200-500', '500-plus']).optional(),
+  eventDate: z.date().min(new Date(Date.now() + 48 * 60 * 60 * 1000), "Event date must be at least 48 hours from now").optional(),
+  dietaryRestrictions: z.array(z.string()).optional(),
+  designPreferences: z.string().max(1000, "Design preferences too long").optional(),
+  contactPreference: z.enum(['email', 'phone']).default('email'),
+});
+
+export const bakeryInventorySchema = z.object({
+  productId: z.string().min(1, "Product ID is required"),
+  stockQuantity: z.number().int().min(0, "Stock quantity cannot be negative"),
+  lowStockThreshold: z.number().int().min(0, "Low stock threshold cannot be negative").optional(),
+  isAvailable: z.boolean().default(true),
+  preparationTime: z.enum(['ready-made', 'same-day', 'next-day', 'custom-order', 'wedding-cake', 'special-occasion']),
+  notes: z.string().max(500, "Notes too long").optional(),
 });

@@ -2,6 +2,16 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { AccountSidebar } from "@/components/dashboard/account-sidebar";
+import { BAKERY_META } from "@/lib/constants/brand";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    default: `My Account | ${BAKERY_META.title}`,
+    template: `%s | ${BAKERY_META.title}`,
+  },
+  description: `Manage your ${BAKERY_META.title} account, view orders, and update your preferences.`,
+};
 
 export default async function AccountLayout({ children, }: { children: React.ReactNode; }) {
     // Check authentication

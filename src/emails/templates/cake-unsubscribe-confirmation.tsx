@@ -2,23 +2,21 @@ import { Section, Text, Img } from "@react-email/components";
 import * as React from "react";
 import { EmailLayout, EmailHeader, EmailButton, EmailFooter } from "../components";
 import { emailStyles } from "../styles";
+import { BAKERY_BRAND } from "@/lib/constants/brand";
+import type { CakeUnsubscribeConfirmationData } from "../types";
 
-interface CakeUnsubscribeConfirmationProps {
-  email: string;
-  unsubscribeDate: string;
-  resubscribeUrl?: string;
-}
-
-export const CakeUnsubscribeConfirmationEmail: React.FC<CakeUnsubscribeConfirmationProps> = ({
+export const CakeUnsubscribeConfirmationEmail: React.FC<CakeUnsubscribeConfirmationData> = ({
   email,
   unsubscribeDate,
   resubscribeUrl,
+  companyName = BAKERY_BRAND.name,
+  supportEmail = BAKERY_BRAND.email,
 }) => {
   return (
-    <EmailLayout preview="You've been unsubscribed from Dee's Delicious Cakes">
+    <EmailLayout preview={`You've been unsubscribed from ${BAKERY_BRAND.name}`}>
       <EmailHeader 
         title="Unsubscribe Confirmed" 
-        subtitle="We&apos;re sorry to see you go!"
+        subtitle="We're sorry to see you go!"
       />
       
       {/* Farewell cake image */}
@@ -38,7 +36,7 @@ export const CakeUnsubscribeConfirmationEmail: React.FC<CakeUnsubscribeConfirmat
         </Text>
         
         <Text style={emailStyles.text}>
-          This email confirms that you have been successfully unsubscribed from Dee&apos;s Delicious Cakes newsletter.
+          This email confirms that you have been successfully unsubscribed from {BAKERY_BRAND.name} newsletter.
         </Text>
         
         <Section style={emailStyles.confirmationSection}>
@@ -58,7 +56,7 @@ export const CakeUnsubscribeConfirmationEmail: React.FC<CakeUnsubscribeConfirmat
         </Text>
         
         <Text style={emailStyles.text}>
-          If you unsubscribed by mistake or change your mind, you can easily resubscribe at any time by visiting our website or clicking the button below.
+          If you unsubscribed by mistake or change your mind, you can easily resubscribe at any time by visiting our website{resubscribeUrl ? ' or clicking the button below' : ''}.
         </Text>
         
         {resubscribeUrl && (
@@ -69,10 +67,10 @@ export const CakeUnsubscribeConfirmationEmail: React.FC<CakeUnsubscribeConfirmat
         
         <Section style={emailStyles.supportSection}>
           <Text style={emailStyles.sectionTitle}>
-            <strong>Need Help?</strong>
+            Need Help?
           </Text>
           <Text style={emailStyles.smallText}>
-            If you have any questions about your unsubscription or need assistance with anything else, please don&apos;t hesitate to contact us at hello@deescakes.com
+            If you have any questions about your unsubscription or need assistance with anything else, please don&apos;t hesitate to contact us at {supportEmail}
           </Text>
         </Section>
         
@@ -80,15 +78,15 @@ export const CakeUnsubscribeConfirmationEmail: React.FC<CakeUnsubscribeConfirmat
           Thank you for being part of our sweet community. Even though you won&apos;t be receiving our newsletters, we hope you&apos;ll still think of us for your special cake needs!
         </Text>
         
-        <Text style={emailStyles.text}>
+        <Text style={emailStyles.signatureText}>
           Best wishes,<br />
-          Dee & The Team 🍰
+          {BAKERY_BRAND.owner} & The Team 🍰
         </Text>
       </Section>
       
       <EmailFooter 
-        companyName="Dee's Delicious Cakes" 
-        supportEmail="hello@deescakes.com"
+        companyName={companyName}
+        supportEmail={supportEmail}
         showUnsubscribe={false}
       />
     </EmailLayout>
@@ -98,10 +96,12 @@ export const CakeUnsubscribeConfirmationEmail: React.FC<CakeUnsubscribeConfirmat
 const heroSection = {
   textAlign: "center" as const,
   margin: "20px 0",
+  padding: "0 20px",
 };
 
 const heroImage = {
-  borderRadius: "8px",
+  borderRadius: "12px",
   maxWidth: "100%",
   height: "auto",
+  border: "3px solid #f4a261",
 };

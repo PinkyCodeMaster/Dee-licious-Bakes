@@ -1,45 +1,41 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, UserCheck, UserX, Activity, Shield, AlertTriangle } from "lucide-react";
+import { Users, UserCheck, ShoppingBag, Activity, Shield, AlertTriangle, CakeSlice } from "lucide-react";
 import { sql, count, desc, gte } from "drizzle-orm";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { authschema } from "@/db/schema";
+import { authschema, ordersschema } from "@/db/schema";
 import { Suspense } from "react";
 import { db } from "@/db";
 
 async function getAdminStats() {
     try {
-        // Get total users
-        const totalUsers = await db.select({ count: count() }).from(authschema.user);
+        // Get total customers
+        const totalCustomers = await db.select({ count: count() }).from(authschema.user);
 
-        // Get verified users
-        const verifiedUsers = await db
+        // Get verified customers
+        const verifiedCustomers = await db
             .select({ count: count() })
             .from(authschema.user)
             .where(sql`${authschema.user.emailVerified} IS NOT NULL`);
 
-        // Get banned users
-        const bannedUsers = await db
-            .select({ count: count() })
-            .from(authschema.user)
-            .where(sql`${authschema.user.banned} = true`);
+        // Get total orders
+        const totalOrders = await db.select({ count: count() }).from(ordersschema.orders);
 
-        // Get active sessions (last 24 hours)
-        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-        const activeSessions = await db
-            .select({ count: count() })
-            .from(authschema.session)
-            .where(gte(authschema.session.expiresAt, oneDayAgo));
-
-        // Get recent users (last 7 days)
+        // Get recent orders (last 7 days)
         const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        const recentUsers = await db
+        const recentOrders = await db
+            .select({ count: count() })
+            .from(ordersschema.orders)
+            .where(gte(ordersschema.orders.createdAt, sevenDaysAgo));
+
+        // Get new customers (last 7 days)
+        const newCustomers = await db
             .select({ count: count() })
             .from(authschema.user)
             .where(gte(authschema.user.createdAt, sevenDaysAgo));
 
-        // Get latest users
-        const latestUsers = await db
+        // Get latest customers
+        const latestCustomers = await db
             .select({
                 id: authschema.user.id,
                 name: authschema.user.name,
@@ -54,22 +50,22 @@ async function getAdminStats() {
             .limit(5);
 
         return {
-            totalUsers: totalUsers[0]?.count || 0,
-            verifiedUsers: verifiedUsers[0]?.count || 0,
-            bannedUsers: bannedUsers[0]?.count || 0,
-            activeSessions: activeSessions[0]?.count || 0,
-            recentUsers: recentUsers[0]?.count || 0,
-            latestUsers
+            totalCustomers: totalCustomers[0]?.count || 0,
+            verifiedCustomers: verifiedCustomers[0]?.count || 0,
+            totalOrders: totalOrders[0]?.count || 0,
+            recentOrders: recentOrders[0]?.count || 0,
+            newCustomers: newCustomers[0]?.count || 0,
+            latestCustomers
         };
     } catch (error) {
         console.error("Error fetching admin stats:", error);
         return {
-            totalUsers: 0,
-            verifiedUsers: 0,
-            bannedUsers: 0,
-            activeSessions: 0,
-            recentUsers: 0,
-            latestUsers: []
+            totalCustomers: 0,
+            verifiedCustomers: 0,
+            totalOrders: 0,
+            recentOrders: 0,
+            newCustomers: 0,
+            latestCustomers: []
         };
     }
 }
@@ -119,8 +115,8 @@ function RecentUsersTableSkeleton() {
 async function AdminStats() {
     const stats = await getAdminStats();
 
-    const verificationRate = stats.totalUsers > 0
-        ? Math.round((stats.verifiedUsers / stats.totalUsers) * 100)
+    const verificationRate = stats.totalCustomers > 0
+        ? Math.round((stats.verifiedCustomers / stats.totalCustomers) * 100)
         : 0;
 
     return (
@@ -129,24 +125,24 @@ async function AdminStats() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                        <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.totalUsers.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">{stats.totalCustomers.toLocaleString()}</div>
                         <p className="text-xs text-muted-foreground">
-                            +{stats.recentUsers} this week
+                            +{stats.newCustomers} this week
                         </p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Verified Users</CardTitle>
+                        <CardTitle className="text-sm font-medium">Verified Customers</CardTitle>
                         <UserCheck className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.verifiedUsers.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">{stats.verifiedCustomers.toLocaleString()}</div>
                         <p className="text-xs text-muted-foreground">
                             {verificationRate}% verification rate
                         </p>
@@ -155,74 +151,74 @@ async function AdminStats() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
-                        <Activity className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+                        <ShoppingBag className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats.activeSessions.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">{stats.totalOrders.toLocaleString()}</div>
                         <p className="text-xs text-muted-foreground">
-                            Currently
+                            All time
                         </p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Banned Users</CardTitle>
-                        <UserX className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">Recent Orders</CardTitle>
+                        <CakeSlice className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-destructive">{stats.bannedUsers.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">{stats.recentOrders.toLocaleString()}</div>
                         <p className="text-xs text-muted-foreground">
-                            Requires attention
+                            This week
                         </p>
                     </CardContent>
                 </Card>
             </div>
 
-            {/* Recent Users Table */}
+            {/* Recent Customers Table */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Recent Users</CardTitle>
+                    <CardTitle>Recent Customers</CardTitle>
                     <CardDescription>
-                        Latest user registrations and their status
+                        Latest customer registrations and their status
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    {stats.latestUsers.length === 0 ? (
+                    {stats.latestCustomers.length === 0 ? (
                         <div className="text-center py-8 text-muted-foreground">
-                            No users found
+                            No customers found
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            {stats.latestUsers.map((user) => (
-                                <div key={user.id} className="flex items-center justify-between">
+                            {stats.latestCustomers.map((customer) => (
+                                <div key={customer.id} className="flex items-center justify-between">
                                     <div className="flex items-center space-x-3">
                                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
                                             <span className="text-sm font-medium">
-                                                {user.name?.charAt(0)?.toUpperCase() || user.email.charAt(0).toUpperCase()}
+                                                {customer.name?.charAt(0)?.toUpperCase() || customer.email.charAt(0).toUpperCase()}
                                             </span>
                                         </div>
                                         <div>
-                                            <p className="text-sm font-medium">{user.name || "No name"}</p>
-                                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                                            <p className="text-sm font-medium">{customer.name || "No name"}</p>
+                                            <p className="text-sm text-muted-foreground">{customer.email}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center space-x-2">
-                                        {user.banned && (
+                                        {customer.banned && (
                                             <Badge variant="destructive" className="text-xs">
                                                 <AlertTriangle className="w-3 h-3 mr-1" />
                                                 Banned
                                             </Badge>
                                         )}
-                                        {user.role === 'admin' && (
+                                        {customer.role === 'admin' && (
                                             <Badge variant="secondary" className="text-xs">
                                                 <Shield className="w-3 h-3 mr-1" />
                                                 Admin
                                             </Badge>
                                         )}
-                                        <Badge variant={user.emailVerified ? "default" : "outline"} className="text-xs">
-                                            {user.emailVerified ? "Verified" : "Unverified"}
+                                        <Badge variant={customer.emailVerified ? "default" : "outline"} className="text-xs">
+                                            {customer.emailVerified ? "Verified" : "Unverified"}
                                         </Badge>
                                     </div>
                                 </div>
@@ -240,9 +236,9 @@ export default function AdminDashboardPage() {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Bakery Dashboard</h1>
                 <p className="text-muted-foreground">
-                    Overview of your application&apos;s users and activity
+                    Overview of your bakery&apos;s customers and orders
                 </p>
             </div>
 

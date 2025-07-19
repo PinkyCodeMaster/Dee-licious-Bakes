@@ -96,8 +96,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthForm
-      title="Reset your password"
-      description="Enter your email address and we'll send you a link to reset your password"
+      title="Reset your bakery account password"
+      description="Enter your email address and we'll send you a link to reset your Dee-licious Bakes account password"
       onSubmit={handleSubmit}
       submitText="Send reset link"
       isLoading={isLoading}
