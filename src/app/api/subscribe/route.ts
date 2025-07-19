@@ -3,6 +3,7 @@ import { resend } from '@/lib/resend';
 import { subscribeEmailSchema, type SubscribeResponse } from '@/lib/validations/subscription';
 import { ZodError } from 'zod';
 import { env } from '@/lib/env';
+import { sendCakeWelcomeEmail } from '@/emails/utils/cake-email-sender';
 
 
 
@@ -23,6 +24,23 @@ export async function POST(request: NextRequest): Promise<NextResponse<Subscribe
         unsubscribed: false,
         audienceId: env.CAKE_AUDIENCE_ID,
       });
+
+      // Send welcome email after successful subscription
+      if (result.data?.id) {
+        const baseUrl = env.BETTER_AUTH_URL === 'http://localhost:3000' ? 'https://deeliciousbakes.co.uk' : env.BETTER_AUTH_URL;
+        const welcomeEmailResult = await sendCakeWelcomeEmail(validatedData.email, {
+          email: validatedData.email,
+          firstName: validatedData.firstName || 'there',
+          unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(validatedData.email)}`,
+        });
+
+        if (!welcomeEmailResult.success) {
+          console.error('Failed to send welcome email:', welcomeEmailResult.error);
+          // Don't fail the subscription if email fails, just log it
+        } else {
+          console.log('Welcome email sent successfully:', welcomeEmailResult.messageId);
+        }
+      }
     } catch (resendError) {
       console.error('Resend API exception:', resendError);
       return NextResponse.json(

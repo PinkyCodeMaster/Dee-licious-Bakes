@@ -125,7 +125,7 @@ async function seedDatabase() {
             
             // Occasion tags
             { id: generateId('tag'), name: 'Birthday', type: 'occasion', color: '#DC2626' },
-            { id: generateId('tag'), name: 'Wedding', type: 'occasion', color: '#DB2777' },
+            // { id: generateId('tag'), name: 'Wedding', type: 'occasion', color: '#DB2777' },
             { id: generateId('tag'), name: 'Anniversary', type: 'occasion', color: '#C026D3' },
             { id: generateId('tag'), name: 'Holiday', type: 'occasion', color: '#9333EA' },
             { id: generateId('tag'), name: 'Corporate', type: 'occasion', color: '#7C3AED' },

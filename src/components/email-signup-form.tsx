@@ -97,10 +97,11 @@ export function EmailSignupForm({
         setError(result.message);
         onError?.(result.message);
       }
-    } catch (err) {
+    } catch (error) {
       const errorMessage = 'Failed to subscribe. Please check your connection and try again.';
       setError(errorMessage);
       onError?.(errorMessage);
+      console.error('Subscription error:', error);
     } finally {
       setIsLoading(false);
     }

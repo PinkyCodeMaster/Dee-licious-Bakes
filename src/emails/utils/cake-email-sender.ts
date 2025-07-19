@@ -4,6 +4,7 @@ import { CakeWelcomeEmail } from "../templates/cake-welcome";
 import { CakeUnsubscribeConfirmationEmail } from "../templates/cake-unsubscribe-confirmation";
 import { render } from "@react-email/components";
 import { resend } from "../../lib/resend";
+import { env } from "../../lib/env";
 
 // Cake email template types
 export type CakeEmailTemplate = "cake-welcome" | "cake-unsubscribe-confirmation";
@@ -92,7 +93,7 @@ What to expect from our newsletter:
 💝 Exclusive offers and early booking opportunities
 📸 Fresh photos of my latest cake masterpieces
 
-I believe every celebration deserves a cake that's as special as the moment itself. Whether you're planning a wedding, birthday, anniversary, or just want to treat yourself, I'm here to make your cake dreams come true.
+I believe every celebration deserves a cake that's as special as the moment itself. Whether you're planning a birthday, anniversary, or just want to treat yourself, I'm here to make your cake dreams come true.
 
 Keep an eye on your inbox for sweet updates, and don't hesitate to reach out if you have any questions about custom cake orders!
 
@@ -141,7 +142,7 @@ export async function sendCakeEmail({
   to,
   template,
   data,
-  from = "hello@deescakes.com",
+  from = env.RESEND_FROM_EMAIL,
 }: SendCakeEmailParams): Promise<CakeEmailSendResult> {
   try {
     // Validate email address
@@ -213,7 +214,7 @@ export async function sendCakeWelcomeEmail(
     template: "cake-welcome",
     data: {
       companyName: "Dee's Delicious Cakes",
-      supportEmail: "hello@deescakes.com",
+      supportEmail: "hello@deeliciousbakes.co.uk",
       ...data,
     },
   });
@@ -234,7 +235,7 @@ export async function sendCakeUnsubscribeConfirmationEmail(
     template: "cake-unsubscribe-confirmation",
     data: {
       companyName: "Dee's Delicious Cakes",
-      supportEmail: "hello@deescakes.com",
+      supportEmail: "hello@deeliciousbakes.co.uk",
       ...data,
     },
   });

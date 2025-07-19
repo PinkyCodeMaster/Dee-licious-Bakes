@@ -30,7 +30,7 @@ The seed script creates comprehensive test data including:
 
 ### Tags (18 total)
 - **Dietary**: Gluten-Free, Vegan, Sugar-Free, Dairy-Free, Nut-Free
-- **Occasion**: Birthday, Wedding, Anniversary, Holiday, Corporate
+<!-- - **Occasion**: Birthday, Wedding, Anniversary, Holiday, Corporate -->
 - **Flavor**: Chocolate, Vanilla, Strawberry, Lemon, Caramel
 - **Special**: Best Seller, New, Seasonal
 

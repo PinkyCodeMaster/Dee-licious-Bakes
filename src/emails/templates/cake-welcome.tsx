@@ -41,7 +41,7 @@ export const CakeWelcomeEmail: React.FC<CakeWelcomeEmailProps> = ({
         </Text>
         
         <Text style={emailStyles.text}>
-          My name is Dee, and I&apos;ve been creating beautiful, delicious cakes for over 15 years. From elegant wedding cakes to fun birthday celebrations, I pour my heart into every creation.
+          My name is Dee, and I&apos;ve been creating beautiful, delicious cakes for over 15 years. From elegant Chesses cakes to fun birthday celebrations, I pour my heart into every creation.
         </Text>
         
         <Section style={emailStyles.infoSection}>
