@@ -30,9 +30,10 @@ export const BAKERY_META = {
 
 export const BAKERY_SOCIAL = {
   // Add social media links when available
-  facebook: "",
-  instagram: "",
-  twitter: "",
+  // facebook: "",
+  instagram: "https://www.instagram.com/deeliciousbakes2025",
+  tiktok: "https://www.tiktok.com/@deeliciousbakes",
+  pinterest: "https://uk.pinterest.com/deeliciousbakes/",
 } as const;
 
 // Export individual constants for convenience

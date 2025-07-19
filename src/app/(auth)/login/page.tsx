@@ -57,8 +57,8 @@ export default function LoginPage() {
   return (
     <div className="space-y-6">
       <AuthForm
-        title="Sign in to your account"
-        description="Enter your email and password to access your account"
+        title="Sign in to your bakery account"
+        description="Enter your email and password to access your Dee-licious Bakes account"
         onSubmit={handleSubmit}
         submitText="Sign in"
         isLoading={isLoading}

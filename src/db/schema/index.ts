@@ -17,6 +17,9 @@ export {
     productTags,
     allergens,
     productAllergens,
+    recipes,
+    productRecipes,
+    recipeImages,
     categoriesRelations,
     productsRelations,
     productVariantsRelations,
@@ -24,7 +27,10 @@ export {
     tagsRelations,
     productTagsRelations,
     allergensRelations,
-    productAllergensRelations
+    productAllergensRelations,
+    recipesRelations,
+    productRecipesRelations,
+    recipeImagesRelations
 } from './products'
 
 export {

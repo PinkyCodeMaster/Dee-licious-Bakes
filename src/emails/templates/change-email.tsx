@@ -2,6 +2,7 @@ import { Section, Text } from "@react-email/components";
 import * as React from "react";
 import { EmailLayout, EmailHeader, EmailButton, EmailFooter } from "../components";
 import { emailStyles } from "../styles";
+import { BAKERY_BRAND } from "@/lib/constants/brand";
 import type { ChangeEmailData } from "../types";
 
 interface ChangeEmailProps {
@@ -11,7 +12,14 @@ interface ChangeEmailProps {
 export const ChangeEmailEmail: React.FC<ChangeEmailProps> = ({
   data,
 }) => {
-  const { approvalUrl, oldEmail, newEmail, userName, companyName, supportEmail } = data;
+  const { 
+    approvalUrl, 
+    oldEmail, 
+    newEmail, 
+    userName, 
+    companyName = BAKERY_BRAND.name, 
+    supportEmail = BAKERY_BRAND.email 
+  } = data;
 
   return (
     <EmailLayout preview="Approve your email change">
@@ -25,7 +33,7 @@ export const ChangeEmailEmail: React.FC<ChangeEmailProps> = ({
           {userName ? `Hello ${userName},` : "Hello,"}
         </Text>
         <Text style={emailStyles.text}>
-          We received a request to change the email address for your account.
+          We received a request to change the email address for your {BAKERY_BRAND.name} account.
         </Text>
         
         <Section style={emailStyles.infoSection}>

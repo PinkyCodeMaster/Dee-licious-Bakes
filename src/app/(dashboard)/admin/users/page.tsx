@@ -130,7 +130,7 @@ async function UsersTable({ searchParams }: { searchParams: SearchParams }) {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>User</TableHead>
+                        <TableHead>Customer</TableHead>
                         <TableHead>Role</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Joined</TableHead>
@@ -141,7 +141,7 @@ async function UsersTable({ searchParams }: { searchParams: SearchParams }) {
                     {usersList.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                                No users found
+                                No customers found
                             </TableCell>
                         </TableRow>
                     ) : (
@@ -166,7 +166,7 @@ async function UsersTable({ searchParams }: { searchParams: SearchParams }) {
                                             Admin
                                         </Badge>
                                     ) : (
-                                        <Badge variant="outline">User</Badge>
+                                        <Badge variant="outline">Customer</Badge>
                                     )}
                                 </TableCell>
                                 <TableCell>
@@ -202,7 +202,7 @@ async function UsersTable({ searchParams }: { searchParams: SearchParams }) {
             {pagination.totalPages > 1 && (
                 <div className="flex items-center justify-between">
                     <div className="text-sm text-muted-foreground">
-                        Showing {(pagination.page - 1) * 10 + 1} to {Math.min(pagination.page * 10, pagination.total)} of {pagination.total} users
+                        Showing {(pagination.page - 1) * 10 + 1} to {Math.min(pagination.page * 10, pagination.total)} of {pagination.total} customers
                     </div>
                     <div className="flex items-center space-x-2">
                         <Button variant="outline" size="sm" disabled={!pagination.hasPrev}>
@@ -251,8 +251,8 @@ export default async function UsersPage({
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-                    <p className="text-muted-foreground">Manage user accounts, roles, and permissions</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Customer Management</h1>
+                    <p className="text-muted-foreground">Manage customer accounts and information</p>
                 </div>
                 <AddUserDialog />
             </div>
@@ -260,8 +260,8 @@ export default async function UsersPage({
             {/* Search and Filters */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Search Users</CardTitle>
-                    <CardDescription>Find users by name or email address</CardDescription>
+                    <CardTitle>Search Customers</CardTitle>
+                    <CardDescription>Find customers by name or email address</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <UserSearch />
@@ -271,8 +271,8 @@ export default async function UsersPage({
             {/* Users Table */}
             <Card>
                 <CardHeader>
-                    <CardTitle>All Users</CardTitle>
-                    <CardDescription>A list of all registered users in your application</CardDescription>
+                    <CardTitle>All Customers</CardTitle>
+                    <CardDescription>A list of all registered customers</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Suspense fallback={<UsersTableSkeleton />}>

@@ -1,6 +1,7 @@
 "use client";
 
 import { EmailSignupForm } from "@/components/email-signup-form";
+import { BAKERY_NAME, BAKERY_BRAND } from "@/lib/constants/brand";
 import { cn } from "@/lib/utils";
 
 interface HeroSectionProps {
@@ -12,10 +13,10 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({
-  title = "Dee's Delicious Cakes",
-  subtitle = "Handcrafted with love, baked to perfection. Get exclusive updates on new flavors, special offers, and cake decorating tips delivered straight to your inbox.",
-  ctaText = "Join Our Sweet Community",
-  backgroundImage = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2089&q=80",
+  title = BAKERY_NAME,
+  subtitle = `${BAKERY_BRAND.description} - ${BAKERY_BRAND.tagline}. Fresh baked goods made with love for every occasion.`,
+  ctaText = "Stay Updated",
+  backgroundImage = "https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&ixid=M3wxMJA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2089&q=80",
   className,
 }: HeroSectionProps) {
   return (
@@ -81,9 +82,9 @@ export function HeroSection({
               <EmailSignupForm
                 variant="hero"
                 title={ctaText}
-                description="No spam, just sweet updates!"
-                placeholder="Enter your email for sweet updates"
-                buttonText="Get Sweet Updates"
+                description="Get notified about new treats and special offers"
+                placeholder="Enter your email"
+                buttonText="Subscribe"
                 className="space-y-4"
               />
             </div>
@@ -98,7 +99,7 @@ export function HeroSection({
                 : "text-gray-500 dark:text-gray-400"
             )}>
               <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span>
-              <span>Fresh ingredients daily</span>
+              <span>Fresh daily</span>
             </div>
             <div className={cn(
               "flex items-center gap-2",
@@ -107,7 +108,7 @@ export function HeroSection({
                 : "text-gray-500 dark:text-gray-400"
             )}>
               <span className="w-2 h-2 bg-pink-500 rounded-full flex-shrink-0"></span>
-              <span>Custom designs available</span>
+              <span>Custom cakes</span>
             </div>
             <div className={cn(
               "flex items-center gap-2",
@@ -116,7 +117,7 @@ export function HeroSection({
                 : "text-gray-500 dark:text-gray-400"
             )}>
               <span className="w-2 h-2 bg-yellow-500 rounded-full flex-shrink-0"></span>
-              <span>Local delivery & pickup</span>
+              <span>Local delivery</span>
             </div>
           </div>
         </div>

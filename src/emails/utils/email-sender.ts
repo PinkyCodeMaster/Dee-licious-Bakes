@@ -6,7 +6,7 @@ import { DeleteAccountEmail } from "../templates/delete-account";
 import { VerifyEmailEmail } from "../templates/verify-email";
 import { ChangeEmailEmail } from "../templates/change-email";
 import { render } from "@react-email/components";
-import { resend } from "../../lib/resend";
+import { resend } from "../../lib/email/resend";
 import { env } from "../../lib/env";
 
 

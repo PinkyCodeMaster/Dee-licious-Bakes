@@ -33,17 +33,20 @@ export const EmailLayout: React.FC<EmailLayoutProps> = ({
 };
 
 const main = {
-  backgroundColor: "#ffffff",
-  fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+  backgroundColor: "#fefcf8",
+  fontFamily: 'Georgia, "Times New Roman", serif',
+  color: "#5d4037",
 };
 
 const container = {
   margin: "0 auto",
   padding: "20px 0 48px",
-  maxWidth: "560px",
+  maxWidth: "600px",
+  backgroundColor: "#ffffff",
+  borderRadius: "12px",
+  boxShadow: "0 4px 12px rgba(139, 69, 19, 0.1)",
 };
 
 const content = {
-  padding: "0 20px",
+  padding: "0 30px",
 };

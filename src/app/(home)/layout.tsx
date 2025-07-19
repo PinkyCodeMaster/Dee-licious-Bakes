@@ -1,4 +1,5 @@
 import { SiteHeader } from '@/components/site-header';
+import { SiteFooter } from '@/components/site-footer';
 import React from 'react'
 
 export default function HomeLayout({ children }: Readonly<{
@@ -10,6 +11,7 @@ export default function HomeLayout({ children }: Readonly<{
             <main className="min-h-screen">
                 {children}
             </main>
+            <SiteFooter />
         </>
     )
 }

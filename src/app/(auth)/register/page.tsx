@@ -108,8 +108,8 @@ export default function RegisterPage() {
   return (
     <div className="space-y-6">
       <AuthForm
-        title="Create your account"
-        description="Enter your information to get started"
+        title="Join Dee-licious Bakes"
+        description="Create your account to place orders and stay updated on our latest treats"
         onSubmit={handleSubmit}
         submitText="Create account"
         isLoading={isLoading}

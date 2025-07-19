@@ -2,6 +2,7 @@ import { Section, Text } from "@react-email/components";
 import * as React from "react";
 import { EmailLayout, EmailHeader, EmailFooter } from "../components";
 import { emailStyles } from "../styles";
+import { BAKERY_BRAND } from "@/lib/constants/brand";
 import type { AccountDeletedData } from "../types";
 
 interface AccountDeletedProps {
@@ -11,7 +12,13 @@ interface AccountDeletedProps {
 export const AccountDeletedEmail: React.FC<AccountDeletedProps> = ({
   data,
 }) => {
-  const { userEmail, userName, deletionDate, companyName, supportEmail } = data;
+  const { 
+    userEmail, 
+    userName, 
+    deletionDate, 
+    companyName = BAKERY_BRAND.name, 
+    supportEmail = BAKERY_BRAND.email 
+  } = data;
 
   return (
     <EmailLayout preview="Your account has been deleted">
@@ -84,7 +91,7 @@ export const AccountDeletedEmail: React.FC<AccountDeletedProps> = ({
         </Section>
 
         <Text style={emailStyles.text}>
-          Thank you for being part of our community. We&apos;re sorry to see you go.
+          Thank you for being part of our sweet {BAKERY_BRAND.name} community. We&apos;re sorry to see you go, and we hope our paths cross again in the future.
         </Text>
       </Section>
 

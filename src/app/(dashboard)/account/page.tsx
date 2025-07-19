@@ -1,20 +1,10 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { User, Mail, Calendar, Shield, ShoppingBag, CheckCircle, XCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  User, 
-  Mail, 
-  Calendar, 
-  Shield, 
-  CreditCard, 
-  MessageSquare, 
-  ShoppingBag,
-  CheckCircle,
-  XCircle
-} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 import Link from "next/link";
 
 export default async function AccountOverviewPage() {
@@ -54,25 +44,11 @@ export default async function AccountOverviewPage() {
       color: "bg-blue-500"
     },
     {
-      title: "View Messages",
-      description: "Check your recent messages",
-      href: "/account/messages",
-      icon: MessageSquare,
-      color: "bg-green-500"
-    },
-    {
-      title: "Order History",
-      description: "View your past orders",
+      title: "My Orders",
+      description: "View your cake and pastry orders",
       href: "/account/orders",
       icon: ShoppingBag,
-      color: "bg-purple-500"
-    },
-    {
-      title: "Subscriptions",
-      description: "Manage your subscriptions",
-      href: "/account/subscriptions",
-      icon: CreditCard,
-      color: "bg-orange-500"
+      color: "bg-pink-500"
     }
   ];
 
@@ -80,8 +56,8 @@ export default async function AccountOverviewPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Account Overview</h1>
-        <p className="text-gray-600">Welcome back, {user.name}!</p>
+        <h1 className="text-3xl font-bold text-gray-900">My Account</h1>
+        <p className="text-gray-600">Welcome back, {user.name}! Manage your bakery orders and profile.</p>
       </div>
 
       {/* Account Status Card */}
@@ -100,7 +76,7 @@ export default async function AccountOverviewPage() {
                 {getInitials(user.name)}
               </AvatarFallback>
             </Avatar>
-            
+
             <div className="flex-1 space-y-3">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
@@ -119,14 +95,14 @@ export default async function AccountOverviewPage() {
                   )}
                   {user.emailVerified ? "Email Verified" : "Email Not Verified"}
                 </Badge>
-                
+
                 {user.role && (
                   <Badge variant="secondary">
                     <Shield className="h-3 w-3 mr-1" />
                     {user.role}
                   </Badge>
                 )}
-                
+
                 <Badge variant="outline">
                   <Calendar className="h-3 w-3 mr-1" />
                   Member since {formatDate(user.createdAt)}
@@ -151,7 +127,7 @@ export default async function AccountOverviewPage() {
       {/* Quick Actions Grid */}
       <div>
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {quickActions.map((action) => (
             <Card key={action.title} className="hover:shadow-md transition-shadow">
               <CardContent className="p-6">
@@ -175,19 +151,22 @@ export default async function AccountOverviewPage() {
         </div>
       </div>
 
-      {/* Recent Activity Placeholder */}
+      {/* Recent Orders Placeholder */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>Recent Orders</CardTitle>
           <CardDescription>
-            Your recent account activity and updates
+            Your recent bakery orders and their status
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8 text-gray-500">
-            <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>No recent activity to display</p>
-            <p className="text-sm">Your account activity will appear here</p>
+            <ShoppingBag className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p>No orders yet</p>
+            <p className="text-sm">Your bakery orders will appear here</p>
+            <Button asChild className="mt-4" variant="outline">
+              <Link href="/cakes">Browse Our Cakes</Link>
+            </Button>
           </div>
         </CardContent>
       </Card>

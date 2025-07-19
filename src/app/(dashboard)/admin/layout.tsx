@@ -2,6 +2,16 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { AdminSidebar } from "@/components/dashboard/admin-sidebar";
+import { BAKERY_META } from "@/lib/constants/brand";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    default: `Admin Dashboard | ${BAKERY_META.title}`,
+    template: `%s | Admin | ${BAKERY_META.title}`,
+  },
+  description: `Admin dashboard for ${BAKERY_META.title} - manage users, settings, and bakery operations.`,
+};
 
 export default async function AdminLayout({
   children,

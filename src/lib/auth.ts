@@ -1,6 +1,6 @@
-import { sendPasswordResetEmail, sendEmailVerification, sendEmailChangeVerification, sendAccountDeletionVerification, sendAccountDeletionConfirmation, } from "../emails/utils/simple-email-sender";
+import { sendPasswordResetEmail, sendEmailVerification, sendEmailChangeVerification, sendAccountDeletionVerification, sendAccountDeletionConfirmation, } from "../lib/email/unified-email-service";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin, anonymous } from "better-auth/plugins";
+import { admin, anonymous, openAPI } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { stripe } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
@@ -109,6 +109,7 @@ export const auth = betterAuth({
     },
     plugins: [
         nextCookies(),
+        openAPI(),
         anonymous(),
         admin({
             adminUserIds: ["NrVRYCpHiLuoOxXe9oO2O6cQbORQkwLd", "oxDnOEkQBFasx8uALue7unTMKXSEjUf5"],

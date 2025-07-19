@@ -1,11 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { resend } from '@/lib/resend';
 import { subscribeEmailSchema, type SubscribeResponse } from '@/lib/validations/subscription';
-import { ZodError } from 'zod';
+import { sendCakeWelcomeEmail } from '@/lib/email/unified-email-service';
+import { NextRequest, NextResponse } from 'next/server';
+import { resend } from '@/lib/email/resend';
 import { env } from '@/lib/env';
-import { sendCakeWelcomeEmail } from '@/emails/utils/cake-email-sender';
-
-
+import { ZodError } from 'zod';
 
 export async function POST(request: NextRequest): Promise<NextResponse<SubscribeResponse>> {
   try {
@@ -29,7 +27,6 @@ export async function POST(request: NextRequest): Promise<NextResponse<Subscribe
       if (result.data?.id) {
         const baseUrl = env.BETTER_AUTH_URL === 'http://localhost:3000' ? 'https://deeliciousbakes.co.uk' : env.BETTER_AUTH_URL;
         const welcomeEmailResult = await sendCakeWelcomeEmail(validatedData.email, {
-          email: validatedData.email,
           firstName: validatedData.firstName || 'there',
           unsubscribeUrl: `${baseUrl}/unsubscribe?email=${encodeURIComponent(validatedData.email)}`,
         });

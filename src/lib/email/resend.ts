@@ -1,8 +1,8 @@
+import type { EmailConfig, EmailTheme } from "../../emails/types";
+import { render } from "@react-email/components";
 import * as React from 'react';
 import { Resend } from 'resend'
-import { render } from "@react-email/components";
-import { env } from "./env";
-import type { EmailConfig, EmailTheme } from "../emails/types";
+import { env } from "../env";
 
 export const resend = new Resend(env.RESEND_API_KEY);
 
