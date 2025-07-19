@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, UserCheck, ShoppingBag, Activity, Shield, AlertTriangle, CakeSlice } from "lucide-react";
+import { Users, UserCheck, ShoppingBag, Shield, AlertTriangle, CakeSlice } from "lucide-react";
 import { sql, count, desc, gte } from "drizzle-orm";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";

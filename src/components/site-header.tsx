@@ -2,7 +2,7 @@
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, } from "@/components/ui/sheet";
-import { Menu, User, Settings, LogOut, MessageSquare, Shield, Home, X, Info, Cake } from "lucide-react";
+import { Menu, User, Settings, LogOut, Shield, Home, X, Info, Cake } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ModeToggle } from "@/components/theme/theme-toggle";
 import { BAKERY_NAME } from "@/lib/constants/brand";

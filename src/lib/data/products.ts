@@ -447,6 +447,252 @@ export class ProductQueryUtils {
   }
 }
 
+/**
+ * Admin-specific product management functions
+ */
+export class AdminProductUtils {
+  /**
+   * Get all products for admin management (including inactive)
+   */
+  static async getAllProductsForAdmin(options: {
+    limit?: number;
+    offset?: number;
+    includeInactive?: boolean;
+    sortBy?: 'name' | 'createdAt' | 'updatedAt' | 'price';
+    sortOrder?: 'asc' | 'desc';
+  } = {}) {
+    const {
+      limit = 50,
+      offset = 0,
+      includeInactive = true,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+    } = options;
+
+    const conditions = [];
+    if (!includeInactive) {
+      conditions.push(eq(products.isActive, true));
+    }
+
+    const orderFn = sortOrder === 'asc' ? asc : desc;
+    let orderBy;
+    switch (sortBy) {
+      case 'name':
+        orderBy = orderFn(products.name);
+        break;
+      case 'price':
+        orderBy = orderFn(products.basePrice);
+        break;
+      case 'updatedAt':
+        orderBy = orderFn(products.updatedAt);
+        break;
+      default:
+        orderBy = orderFn(products.createdAt);
+    }
+
+    const result = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        slug: products.slug,
+        description: products.description,
+        shortDescription: products.shortDescription,
+        categoryId: products.categoryId,
+        basePrice: products.basePrice,
+        isActive: products.isActive,
+        stockQuantity: products.stockQuantity,
+        minSlices: products.minSlices,
+        maxSlices: products.maxSlices,
+        servingSize: products.servingSize,
+        preparationTime: products.preparationTime,
+        createdAt: products.createdAt,
+        updatedAt: products.updatedAt,
+        categoryName: categories.name,
+        categorySlug: categories.slug,
+      })
+      .from(products)
+      .leftJoin(categories, eq(products.categoryId, categories.id))
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(orderBy)
+      .limit(limit)
+      .offset(offset);
+
+    return result;
+  }
+
+  /**
+   * Get product by ID for admin editing
+   */
+  static async getProductById(id: string) {
+    const result = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        slug: products.slug,
+        description: products.description,
+        shortDescription: products.shortDescription,
+        categoryId: products.categoryId,
+        basePrice: products.basePrice,
+        isActive: products.isActive,
+        stockQuantity: products.stockQuantity,
+        minSlices: products.minSlices,
+        maxSlices: products.maxSlices,
+        servingSize: products.servingSize,
+        preparationTime: products.preparationTime,
+        createdAt: products.createdAt,
+        updatedAt: products.updatedAt,
+        categoryName: categories.name,
+        categorySlug: categories.slug,
+      })
+      .from(products)
+      .leftJoin(categories, eq(products.categoryId, categories.id))
+      .where(eq(products.id, id))
+      .limit(1);
+
+    return result[0] || null;
+  }
+
+  /**
+   * Create a new product
+   */
+  static async createProduct(data: {
+    id: string;
+    name: string;
+    slug: string;
+    description?: string;
+    shortDescription?: string;
+    categoryId?: string;
+    basePrice: string;
+    isActive?: boolean;
+    stockQuantity?: number;
+    minSlices?: number;
+    maxSlices?: number;
+    servingSize?: string;
+    preparationTime?: string;
+  }) {
+    const result = await db
+      .insert(products)
+      .values({
+        ...data,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+
+    return result[0];
+  }
+
+  /**
+   * Update an existing product
+   */
+  static async updateProduct(
+    id: string,
+    data: Partial<{
+      name: string;
+      slug: string;
+      description: string;
+      shortDescription: string;
+      categoryId: string;
+      basePrice: string;
+      isActive: boolean;
+      stockQuantity: number;
+      minSlices: number;
+      maxSlices: number;
+      servingSize: string;
+      preparationTime: string;
+    }>
+  ) {
+    const result = await db
+      .update(products)
+      .set({
+        ...data,
+        updatedAt: new Date(),
+      })
+      .where(eq(products.id, id))
+      .returning();
+
+    return result[0];
+  }
+
+  /**
+   * Delete a product
+   */
+  static async deleteProduct(id: string): Promise<{ success: boolean; message: string }> {
+    try {
+      await db.delete(products).where(eq(products.id, id));
+      return {
+        success: true,
+        message: 'Product deleted successfully',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Failed to delete product: ' + (error as Error).message,
+      };
+    }
+  }
+
+  /**
+   * Bulk update products
+   */
+  static async bulkUpdateProducts(
+    productIds: string[],
+    updates: Partial<{
+      isActive: boolean;
+      categoryId: string;
+      basePrice: string;
+    }>
+  ) {
+    const result = await db
+      .update(products)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(inArray(products.id, productIds))
+      .returning();
+
+    return result;
+  }
+
+  /**
+   * Get product statistics for admin dashboard
+   */
+  static async getProductStats() {
+    const totalProducts = await db
+      .select({ count: count() })
+      .from(products);
+
+    const activeProducts = await db
+      .select({ count: count() })
+      .from(products)
+      .where(eq(products.isActive, true));
+
+    const lowStockProducts = await db
+      .select({ count: count() })
+      .from(products)
+      .where(and(
+        eq(products.isActive, true),
+        lte(products.stockQuantity, 5)
+      ));
+
+    const outOfStockProducts = await db
+      .select({ count: count() })
+      .from(products)
+      .where(and(
+        eq(products.isActive, true),
+        eq(products.stockQuantity, 0)
+      ));
+
+    return {
+      total: totalProducts[0]?.count || 0,
+      active: activeProducts[0]?.count || 0,
+      lowStock: lowStockProducts[0]?.count || 0,
+      outOfStock: outOfStockProducts[0]?.count || 0,
+    };
+  }
+}
+
 // Convenience functions for common operations
 export const productQueries = {
   search: ProductQueryUtils.searchProducts,
@@ -456,4 +702,15 @@ export const productQueries = {
   getRecommended: ProductQueryUtils.getRecommendedProducts,
   getByDietaryNeeds: ProductQueryUtils.getProductsByDietaryNeeds,
   getCount: ProductQueryUtils.getProductCount,
+};
+
+// Admin convenience functions
+export const adminProductQueries = {
+  getAll: AdminProductUtils.getAllProductsForAdmin,
+  getById: AdminProductUtils.getProductById,
+  create: AdminProductUtils.createProduct,
+  update: AdminProductUtils.updateProduct,
+  delete: AdminProductUtils.deleteProduct,
+  bulkUpdate: AdminProductUtils.bulkUpdateProducts,
+  getStats: AdminProductUtils.getProductStats,
 };

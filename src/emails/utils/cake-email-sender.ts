@@ -3,7 +3,7 @@ import type { CakeWelcomeEmailData, CakeUnsubscribeConfirmationData } from "../t
 import { CakeWelcomeEmail } from "../templates/cake-welcome";
 import { CakeUnsubscribeConfirmationEmail } from "../templates/cake-unsubscribe-confirmation";
 import { render } from "@react-email/components";
-import { resend } from "../../lib/resend";
+import { resend } from "../../lib/email/resend";
 import { env } from "../../lib/env";
 
 // Cake email template types

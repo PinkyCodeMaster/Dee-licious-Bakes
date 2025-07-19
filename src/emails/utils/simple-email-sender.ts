@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from "@react-email/components";
-import { resend } from "../../lib/resend";
+import { resend } from "../../lib/email/resend";
 import { env } from "../../lib/env";
 import type { 
   ResetPasswordEmailData, 

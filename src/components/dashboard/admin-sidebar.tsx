@@ -1,6 +1,6 @@
 "use client";
 
-import { Shield, Users, MessageSquare, ShoppingBag, CreditCard, BarChart3, User } from "lucide-react";
+import { Shield, Users, ShoppingBag, BarChart3, User, FolderTree, Package, ChefHat } from "lucide-react";
 import { BaseSidebar } from "./base-sidebar";
 
 interface User {
@@ -22,6 +22,15 @@ const navigation = [
       { name: "Dashboard", href: "/admin", icon: BarChart3 },
       { name: "Customers", href: "/admin/users", icon: Users },
       { name: "Orders", href: "/admin/orders", icon: ShoppingBag },
+    ]
+  },
+  {
+    title: "Catalog Management",
+    items: [
+      { name: "Catalog Overview", href: "/admin/catalog", icon: BarChart3 },
+      { name: "Categories", href: "/admin/catalog/categories", icon: FolderTree },
+      { name: "Products", href: "/admin/catalog/products", icon: Package },
+      { name: "Recipes", href: "/admin/catalog/recipes", icon: ChefHat },
     ]
   },
   {

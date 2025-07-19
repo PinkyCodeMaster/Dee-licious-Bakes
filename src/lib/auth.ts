@@ -1,6 +1,6 @@
 import { sendPasswordResetEmail, sendEmailVerification, sendEmailChangeVerification, sendAccountDeletionVerification, sendAccountDeletionConfirmation, } from "../lib/email/unified-email-service";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin, anonymous } from "better-auth/plugins";
+import { admin, anonymous, openAPI } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { stripe } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
@@ -109,9 +109,10 @@ export const auth = betterAuth({
     },
     plugins: [
         nextCookies(),
+        openAPI(),
         anonymous(),
         admin({
-            adminUserIds: ["NrVRYCpHiLuoOxXe9oO2O6cQbORQkwLd"],
+            adminUserIds: ["NrVRYCpHiLuoOxXe9oO2O6cQbORQkwLd", "oxDnOEkQBFasx8uALue7unTMKXSEjUf5"],
             defaultBanReason: "Spamming",
             defaultBanExpiresIn: 60 * 60 * 24, // 1 day
             bannedUserMessage: "You have been banned please check you emails",

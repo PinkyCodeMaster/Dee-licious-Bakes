@@ -1,5 +1,6 @@
 import { pgTable, text, timestamp, boolean, decimal, integer, index, primaryKey, jsonb } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+import { user } from "./auth";
 
 // Categories table with hierarchical support
 export const categories = pgTable("categories", {
@@ -127,6 +128,56 @@ export const productAllergens = pgTable("product_allergens", {
     allergenIdIdx: index('product_allergens_allergen_id_idx').on(table.allergenId),
 }));
 
+// Recipes table for admin catalog management
+export const recipes = pgTable("recipes", {
+    id: text('id').primaryKey(),
+    title: text('title').notNull(),
+    description: text('description'),
+    ingredients: jsonb('ingredients').notNull(), // Array of ingredient objects
+    instructions: jsonb('instructions').notNull(), // Array of instruction steps
+    prepTime: integer('prep_time'), // minutes
+    cookTime: integer('cook_time'), // minutes
+    totalTime: integer('total_time'), // minutes
+    difficulty: text('difficulty'), // easy, medium, hard
+    servings: integer('servings'),
+    notes: text('notes'),
+    isPrivate: boolean('is_private').default(true), // Admin-only recipes
+    createdBy: text('created_by').references(() => user.id),
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow()
+}, (table) => ({
+    titleIdx: index('recipes_title_idx').on(table.title),
+    createdByIdx: index('recipes_created_by_idx').on(table.createdBy),
+    difficultyIdx: index('recipes_difficulty_idx').on(table.difficulty),
+    privateIdx: index('recipes_private_idx').on(table.isPrivate),
+    createdAtIdx: index('recipes_created_at_idx').on(table.createdAt),
+}));
+
+// Product-recipe relationships
+export const productRecipes = pgTable("product_recipes", {
+    productId: text('product_id').references(() => products.id, { onDelete: 'cascade' }).notNull(),
+    recipeId: text('recipe_id').references(() => recipes.id, { onDelete: 'cascade' }).notNull(),
+    isMainRecipe: boolean('is_main_recipe').default(false)
+}, (table) => ({
+    pk: primaryKey({ columns: [table.productId, table.recipeId] }),
+    productIdIdx: index('product_recipes_product_id_idx').on(table.productId),
+    recipeIdIdx: index('product_recipes_recipe_id_idx').on(table.recipeId),
+    mainRecipeIdx: index('product_recipes_main_recipe_idx').on(table.isMainRecipe),
+}));
+
+// Recipe images
+export const recipeImages = pgTable("recipe_images", {
+    id: text('id').primaryKey(),
+    recipeId: text('recipe_id').references(() => recipes.id, { onDelete: 'cascade' }),
+    url: text('url').notNull(),
+    altText: text('alt_text'),
+    sortOrder: integer('sort_order').default(0),
+    createdAt: timestamp('created_at').defaultNow()
+}, (table) => ({
+    recipeIdIdx: index('recipe_images_recipe_id_idx').on(table.recipeId),
+    sortOrderIdx: index('recipe_images_sort_order_idx').on(table.sortOrder),
+}));
+
 // Define relationships
 export const categoriesRelations = relations(categories, ({ one, many }) => ({
     parent: one(categories, {
@@ -149,6 +200,7 @@ export const productsRelations = relations(products, ({ one, many }) => ({
     images: many(productImages),
     allergens: many(productAllergens),
     tags: many(productTags),
+    recipes: many(productRecipes),
 }));
 
 export const productVariantsRelations = relations(productVariants, ({ one }) => ({
@@ -192,5 +244,32 @@ export const productAllergensRelations = relations(productAllergens, ({ one }) =
     allergen: one(allergens, {
         fields: [productAllergens.allergenId],
         references: [allergens.id],
+    }),
+}));
+
+export const recipesRelations = relations(recipes, ({ one, many }) => ({
+    createdBy: one(user, {
+        fields: [recipes.createdBy],
+        references: [user.id],
+    }),
+    products: many(productRecipes),
+    images: many(recipeImages),
+}));
+
+export const productRecipesRelations = relations(productRecipes, ({ one }) => ({
+    product: one(products, {
+        fields: [productRecipes.productId],
+        references: [products.id],
+    }),
+    recipe: one(recipes, {
+        fields: [productRecipes.recipeId],
+        references: [recipes.id],
+    }),
+}));
+
+export const recipeImagesRelations = relations(recipeImages, ({ one }) => ({
+    recipe: one(recipes, {
+        fields: [recipeImages.recipeId],
+        references: [recipes.id],
     }),
 }));

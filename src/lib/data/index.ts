@@ -6,6 +6,9 @@ export * from './products';
 // Category data queries  
 export * from './categories';
 
+// Recipe data queries
+export * from './recipes';
+
 // Filter data queries
 export * from './filters';
 

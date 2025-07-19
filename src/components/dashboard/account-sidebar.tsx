@@ -1,6 +1,6 @@
 "use client";
 
-import { User as userIcon, MessageSquare, ShoppingBag, CreditCard, Home } from "lucide-react";
+import { User as userIcon, ShoppingBag, Home } from "lucide-react";
 import { BaseSidebar } from "./base-sidebar";
 import { type User } from "better-auth";
 

@@ -1,5 +1,23 @@
 // Bakery-specific category definitions and utilities
-export const BAKERY_CATEGORIES = [
+
+export interface BakerySubcategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  sortOrder: number;
+}
+
+export interface BakeryCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  sortOrder: number;
+  subcategories?: BakerySubcategory[];
+}
+
+export const BAKERY_CATEGORIES: BakeryCategory[] = [
   {
     id: 'cakes',
     name: 'Cakes',
@@ -242,7 +260,7 @@ export const PREPARATION_TIMES = {
 
 // Helper function to get category hierarchy
 export function getCategoryHierarchy() {
-  const hierarchy: Record<string, any> = {};
+  const hierarchy: Record<string, Omit<BakeryCategory, 'subcategories'> & { subcategories: Record<string, BakerySubcategory> }> = {};
   
   BAKERY_CATEGORIES.forEach(category => {
     hierarchy[category.slug] = {
@@ -250,7 +268,7 @@ export function getCategoryHierarchy() {
       subcategories: category.subcategories?.reduce((acc, sub) => {
         acc[sub.slug] = sub;
         return acc;
-      }, {} as Record<string, any>) || {},
+      }, {} as Record<string, BakerySubcategory>) || {},
     };
   });
   

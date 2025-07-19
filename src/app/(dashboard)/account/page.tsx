@@ -1,20 +1,10 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { User, Mail, Calendar, Shield, ShoppingBag, CheckCircle, XCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  User, 
-  Mail, 
-  Calendar, 
-  Shield, 
-  CreditCard, 
-  MessageSquare, 
-  ShoppingBag,
-  CheckCircle,
-  XCircle
-} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 import Link from "next/link";
 
 export default async function AccountOverviewPage() {
@@ -86,7 +76,7 @@ export default async function AccountOverviewPage() {
                 {getInitials(user.name)}
               </AvatarFallback>
             </Avatar>
-            
+
             <div className="flex-1 space-y-3">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
@@ -105,14 +95,14 @@ export default async function AccountOverviewPage() {
                   )}
                   {user.emailVerified ? "Email Verified" : "Email Not Verified"}
                 </Badge>
-                
+
                 {user.role && (
                   <Badge variant="secondary">
                     <Shield className="h-3 w-3 mr-1" />
                     {user.role}
                   </Badge>
                 )}
-                
+
                 <Badge variant="outline">
                   <Calendar className="h-3 w-3 mr-1" />
                   Member since {formatDate(user.createdAt)}

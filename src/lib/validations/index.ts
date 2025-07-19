@@ -14,3 +14,6 @@ export * from './messages';
 
 // Subscription validations
 export * from './subscription';
+
+// Catalog management validations
+export * from './catalog';

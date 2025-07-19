@@ -260,7 +260,7 @@ export class CategoryQueryUtils {
   /**
    * Build hierarchical category tree from flat array
    */
-  private static buildCategoryTree(categories: CategoryWithStats[]): CategoryWithStats[] {
+  static buildCategoryTree(categories: CategoryWithStats[]): CategoryWithStats[] {
     const categoryMap = new Map<string, CategoryWithStats>();
     const rootCategories: CategoryWithStats[] = [];
 
@@ -288,6 +288,192 @@ export class CategoryQueryUtils {
   }
 }
 
+/**
+ * Admin-specific category management functions
+ */
+export class AdminCategoryUtils {
+  /**
+   * Get all categories including inactive ones for admin management
+   */
+  static async getAllCategoriesForAdmin(): Promise<CategoryWithStats[]> {
+    const categoriesWithCounts = await db
+      .select({
+        id: categories.id,
+        name: categories.name,
+        slug: categories.slug,
+        description: categories.description,
+        parentId: categories.parentId,
+        sortOrder: categories.sortOrder,
+        isActive: categories.isActive,
+        createdAt: categories.createdAt,
+        updatedAt: categories.updatedAt,
+        productCount: count(products.id),
+      })
+      .from(categories)
+      .leftJoin(products, eq(categories.id, products.categoryId))
+      .groupBy(
+        categories.id,
+        categories.name,
+        categories.slug,
+        categories.description,
+        categories.parentId,
+        categories.sortOrder,
+        categories.isActive,
+        categories.createdAt,
+        categories.updatedAt
+      )
+      .orderBy(asc(categories.sortOrder), asc(categories.name));
+
+    return categoriesWithCounts;
+  }
+
+  /**
+   * Get category by ID for admin editing
+   */
+  static async getCategoryById(id: string): Promise<CategoryWithStats | null> {
+    const result = await db
+      .select({
+        id: categories.id,
+        name: categories.name,
+        slug: categories.slug,
+        description: categories.description,
+        parentId: categories.parentId,
+        sortOrder: categories.sortOrder,
+        isActive: categories.isActive,
+        createdAt: categories.createdAt,
+        updatedAt: categories.updatedAt,
+        productCount: count(products.id),
+      })
+      .from(categories)
+      .leftJoin(products, eq(categories.id, products.categoryId))
+      .where(eq(categories.id, id))
+      .groupBy(
+        categories.id,
+        categories.name,
+        categories.slug,
+        categories.description,
+        categories.parentId,
+        categories.sortOrder,
+        categories.isActive,
+        categories.createdAt,
+        categories.updatedAt
+      )
+      .limit(1);
+
+    return result[0] || null;
+  }
+
+  /**
+   * Create a new category
+   */
+  static async createCategory(data: {
+    id: string;
+    name: string;
+    slug: string;
+    description?: string;
+    parentId?: string;
+    sortOrder?: number;
+    isActive?: boolean;
+  }) {
+    const result = await db
+      .insert(categories)
+      .values({
+        ...data,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+
+    return result[0];
+  }
+
+  /**
+   * Update an existing category
+   */
+  static async updateCategory(
+    id: string,
+    data: Partial<{
+      name: string;
+      slug: string;
+      description: string;
+      parentId: string;
+      sortOrder: number;
+      isActive: boolean;
+    }>
+  ) {
+    const result = await db
+      .update(categories)
+      .set({
+        ...data,
+        updatedAt: new Date(),
+      })
+      .where(eq(categories.id, id))
+      .returning();
+
+    return result[0];
+  }
+
+  /**
+   * Delete a category (only if no products are assigned)
+   */
+  static async deleteCategory(id: string): Promise<{ success: boolean; message: string }> {
+    // Check if category has products
+    const productCount = await db
+      .select({ count: count() })
+      .from(products)
+      .where(eq(products.categoryId, id));
+
+    if (productCount[0]?.count > 0) {
+      return {
+        success: false,
+        message: `Cannot delete category with ${productCount[0].count} assigned products`,
+      };
+    }
+
+    // Check if category has subcategories
+    const subcategoryCount = await db
+      .select({ count: count() })
+      .from(categories)
+      .where(eq(categories.parentId, id));
+
+    if (subcategoryCount[0]?.count > 0) {
+      return {
+        success: false,
+        message: `Cannot delete category with ${subcategoryCount[0].count} subcategories`,
+      };
+    }
+
+    await db.delete(categories).where(eq(categories.id, id));
+
+    return {
+      success: true,
+      message: 'Category deleted successfully',
+    };
+  }
+
+  /**
+   * Reorder categories by updating sort order
+   */
+  static async reorderCategories(categoryOrders: { id: string; sortOrder: number }[]) {
+    const updates = categoryOrders.map(({ id, sortOrder }) =>
+      db
+        .update(categories)
+        .set({ sortOrder, updatedAt: new Date() })
+        .where(eq(categories.id, id))
+    );
+
+    await Promise.all(updates);
+  }
+
+  /**
+   * Get category hierarchy for admin tree view
+   */
+  static async getCategoryHierarchyForAdmin(): Promise<CategoryWithStats[]> {
+    const allCategories = await AdminCategoryUtils.getAllCategoriesForAdmin();
+    return CategoryQueryUtils.buildCategoryTree(allCategories);
+  }
+}
+
 // Convenience functions
 export const categoryQueries = {
   getAll: CategoryQueryUtils.getAllCategoriesWithStats,
@@ -298,4 +484,15 @@ export const categoryQueries = {
   getBreadcrumb: CategoryQueryUtils.getCategoryBreadcrumb,
   getBakeryCategories: CategoryQueryUtils.getBakeryCategories,
   getBakeryCategoryBySlug: CategoryQueryUtils.getBakeryCategoryBySlug,
+};
+
+// Admin convenience functions
+export const adminCategoryQueries = {
+  getAll: AdminCategoryUtils.getAllCategoriesForAdmin,
+  getById: AdminCategoryUtils.getCategoryById,
+  create: AdminCategoryUtils.createCategory,
+  update: AdminCategoryUtils.updateCategory,
+  delete: AdminCategoryUtils.deleteCategory,
+  reorder: AdminCategoryUtils.reorderCategories,
+  getHierarchy: AdminCategoryUtils.getCategoryHierarchyForAdmin,
 };
