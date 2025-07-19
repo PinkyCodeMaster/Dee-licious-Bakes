@@ -111,7 +111,7 @@ export const auth = betterAuth({
         nextCookies(),
         anonymous(),
         admin({
-            adminUserIds: ["NrVRYCpHiLuoOxXe9oO2O6cQbORQkwLd"],
+            adminUserIds: ["NrVRYCpHiLuoOxXe9oO2O6cQbORQkwLd", "oxDnOEkQBFasx8uALue7unTMKXSEjUf5"],
             defaultBanReason: "Spamming",
             defaultBanExpiresIn: 60 * 60 * 24, // 1 day
             bannedUserMessage: "You have been banned please check you emails",
