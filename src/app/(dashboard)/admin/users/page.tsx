@@ -1,8 +1,6 @@
 import { Suspense } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
     Table,
     TableBody,
@@ -12,18 +10,14 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UserActions } from "@/components/dashboard/user-actions";
+import { Badge } from "@/components/ui/badge";
+import { Shield, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
 import { AddUserDialog } from "@/components/dashboard/add-user-dialog";
 import { UserSearch } from "@/components/dashboard/user-search";
+import { UserActions } from "@/components/dashboard/user-actions";
 import { db } from "@/db";
 import { authschema } from "@/db/schema";
 import { desc, ilike, or, count } from "drizzle-orm";
-import {
-    Shield,
-    AlertTriangle,
-    CheckCircle,
-    XCircle
-} from "lucide-react";
 
 interface SearchParams {
     search?: string;
@@ -32,15 +26,15 @@ interface SearchParams {
 
 async function getUsersData(searchParams: SearchParams) {
     const search = searchParams.search || "";
-    const page = parseInt(searchParams.page || "1");
+    const page = parseInt(searchParams.page || "1", 10);
     const limit = 10;
     const offset = (page - 1) * limit;
 
     try {
-        // Build search condition
-        const searchCondition = search ? or(ilike(authschema.user.name, `%${search}%`), ilike(authschema.user.email, `%${search}%`)) : undefined;
+        const searchCondition = search
+            ? or(ilike(authschema.user.name, `%${search}%`), ilike(authschema.user.email, `%${search}%`))
+            : undefined;
 
-        // Get users with pagination
         const usersList = await db
             .select({
                 id: authschema.user.id,
@@ -58,7 +52,6 @@ async function getUsersData(searchParams: SearchParams) {
             .limit(limit)
             .offset(offset);
 
-        // Get total count for pagination
         const totalResult = await db
             .select({ count: count() })
             .from(authschema.user)
@@ -97,14 +90,14 @@ function UsersTableSkeleton() {
         <div className="space-y-4">
             {Array.from({ length: 10 }).map((_, i) => (
                 <div key={i} className="flex items-center space-x-4 p-4">
-                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <div className="h-10 w-10 rounded-full bg-gray-300 animate-pulse" />
                     <div className="space-y-2 flex-1">
-                        <Skeleton className="h-4 w-48" />
-                        <Skeleton className="h-3 w-64" />
+                        <div className="h-4 w-48 bg-gray-300 animate-pulse" />
+                        <div className="h-3 w-64 bg-gray-300 animate-pulse" />
                     </div>
-                    <Skeleton className="h-6 w-16" />
-                    <Skeleton className="h-6 w-20" />
-                    <Skeleton className="h-8 w-8" />
+                    <div className="h-6 w-16 bg-gray-300 animate-pulse" />
+                    <div className="h-6 w-20 bg-gray-300 animate-pulse" />
+                    <div className="h-8 w-8 bg-gray-300 animate-pulse" />
                 </div>
             ))}
         </div>
@@ -123,7 +116,7 @@ function getInitials(name: string | null) {
     if (!name) return "?";
     return name
         .split(" ")
-        .map(n => n[0])
+        .map((n) => n[0])
         .join("")
         .toUpperCase()
         .slice(0, 2);
@@ -141,7 +134,7 @@ async function UsersTable({ searchParams }: { searchParams: SearchParams }) {
                         <TableHead>Role</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Joined</TableHead>
-                        <TableHead className="w-[50px]"></TableHead>
+                        <TableHead className="w-[50px]" />
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -157,10 +150,8 @@ async function UsersTable({ searchParams }: { searchParams: SearchParams }) {
                                 <TableCell>
                                     <div className="flex items-center space-x-3">
                                         <Avatar className="h-8 w-8">
-                                            <AvatarImage src={user.image || undefined} alt={user.name || user.email} />
-                                            <AvatarFallback className="text-xs">
-                                                {getInitials(user.name)}
-                                            </AvatarFallback>
+                                            <AvatarImage src={user.image || undefined} alt={user.name || user.email || ""} />
+                                            <AvatarFallback className="text-xs">{getInitials(user.name)}</AvatarFallback>
                                         </Avatar>
                                         <div>
                                             <div className="font-medium">{user.name || "No name"}</div>
@@ -169,7 +160,7 @@ async function UsersTable({ searchParams }: { searchParams: SearchParams }) {
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    {user.role === 'admin' ? (
+                                    {user.role === "admin" ? (
                                         <Badge variant="secondary">
                                             <Shield className="w-3 h-3 mr-1" />
                                             Admin
@@ -198,9 +189,7 @@ async function UsersTable({ searchParams }: { searchParams: SearchParams }) {
                                         )}
                                     </div>
                                 </TableCell>
-                                <TableCell className="text-sm text-muted-foreground">
-                                    {formatDate(user.createdAt)}
-                                </TableCell>
+                                <TableCell className="text-sm text-muted-foreground">{formatDate(user.createdAt)}</TableCell>
                                 <TableCell>
                                     <UserActions user={user} />
                                 </TableCell>
@@ -210,18 +199,13 @@ async function UsersTable({ searchParams }: { searchParams: SearchParams }) {
                 </TableBody>
             </Table>
 
-            {/* Pagination */}
             {pagination.totalPages > 1 && (
                 <div className="flex items-center justify-between">
                     <div className="text-sm text-muted-foreground">
-                        Showing {((pagination.page - 1) * 10) + 1} to {Math.min(pagination.page * 10, pagination.total)} of {pagination.total} users
+                        Showing {(pagination.page - 1) * 10 + 1} to {Math.min(pagination.page * 10, pagination.total)} of {pagination.total} users
                     </div>
                     <div className="flex items-center space-x-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={!pagination.hasPrev}
-                        >
+                        <Button variant="outline" size="sm" disabled={!pagination.hasPrev}>
                             Previous
                         </Button>
                         <div className="flex items-center space-x-1">
@@ -239,11 +223,7 @@ async function UsersTable({ searchParams }: { searchParams: SearchParams }) {
                                 );
                             })}
                         </div>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={!pagination.hasNext}
-                        >
+                        <Button variant="outline" size="sm" disabled={!pagination.hasNext}>
                             Next
                         </Button>
                     </div>
@@ -253,16 +233,26 @@ async function UsersTable({ searchParams }: { searchParams: SearchParams }) {
     );
 }
 
-export default function UsersPage({ searchParams, }: { searchParams: SearchParams; }) {
+export default async function UsersPage({
+    searchParams,
+}: {
+    searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+    // Await the promise to get the actual searchParams object
+    const resolvedSearchParams = searchParams ? await searchParams : {};
+    // normalize searchParams from Next.js to your SearchParams type
+    const safeSearchParams: SearchParams = {
+        search: typeof resolvedSearchParams?.search === "string" ? resolvedSearchParams.search : "",
+        page: typeof resolvedSearchParams?.page === "string" ? resolvedSearchParams.page : "1",
+    };
+
     return (
         <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-                    <p className="text-muted-foreground">
-                        Manage user accounts, roles, and permissions
-                    </p>
+                    <p className="text-muted-foreground">Manage user accounts, roles, and permissions</p>
                 </div>
                 <AddUserDialog />
             </div>
@@ -271,9 +261,7 @@ export default function UsersPage({ searchParams, }: { searchParams: SearchParam
             <Card>
                 <CardHeader>
                     <CardTitle>Search Users</CardTitle>
-                    <CardDescription>
-                        Find users by name or email address
-                    </CardDescription>
+                    <CardDescription>Find users by name or email address</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <UserSearch />
@@ -284,13 +272,11 @@ export default function UsersPage({ searchParams, }: { searchParams: SearchParam
             <Card>
                 <CardHeader>
                     <CardTitle>All Users</CardTitle>
-                    <CardDescription>
-                        A list of all registered users in your application
-                    </CardDescription>
+                    <CardDescription>A list of all registered users in your application</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Suspense fallback={<UsersTableSkeleton />}>
-                        <UsersTable searchParams={searchParams} />
+                        <UsersTable searchParams={safeSearchParams} />
                     </Suspense>
                 </CardContent>
             </Card>

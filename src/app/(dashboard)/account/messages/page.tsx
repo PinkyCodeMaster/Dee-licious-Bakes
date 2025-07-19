@@ -166,7 +166,6 @@ export default function MessagesPage() {
 
   const handleCompose = () => {
     // In a real app, this would send the message to an API
-    console.log("Sending message:", composeData);
     setIsComposeOpen(false);
     setComposeData({ subject: "", content: "" });
     // You could add a toast notification here
