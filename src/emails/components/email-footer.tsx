@@ -5,11 +5,15 @@ import * as React from "react";
 interface EmailFooterProps {
     companyName?: string;
     supportEmail?: string;
+    unsubscribeUrl?: string;
+    showUnsubscribe?: boolean;
 }
 
 export const EmailFooter: React.FC<EmailFooterProps> = ({
     companyName = "Your Company",
     supportEmail = env.RESEND_FROM_EMAIL,
+    unsubscribeUrl,
+    showUnsubscribe = true,
 }) => {
     return (
         <Section style={footer}>
@@ -20,6 +24,14 @@ export const EmailFooter: React.FC<EmailFooterProps> = ({
                     {supportEmail}
                 </a>
             </Text>
+            {showUnsubscribe && unsubscribeUrl && (
+                <Text style={footerText}>
+                    Don&apos;t want to receive these emails?{" "}
+                    <a href={unsubscribeUrl} style={link}>
+                        Unsubscribe here
+                    </a>
+                </Text>
+            )}
             <Text style={footerText}>
                 © {new Date().getFullYear()} {companyName}. All rights reserved.
             </Text>

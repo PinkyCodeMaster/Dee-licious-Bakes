@@ -21,7 +21,11 @@ interface User {
     role?: string;
 }
 
-export function SiteHeader() {
+interface SiteHeaderProps {
+    hideOnLanding?: boolean;
+}
+
+export function SiteHeader({ hideOnLanding = false }: SiteHeaderProps) {
     const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
@@ -76,6 +80,10 @@ export function SiteHeader() {
         { href: "/account/messages", label: "Messages", icon: MessageSquare },
         ...(user.role === "admin" ? [{ href: "/admin", label: "Admin", icon: Shield }] : []),
     ] : [];
+
+    if (hideOnLanding) {
+        return null;
+    }
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

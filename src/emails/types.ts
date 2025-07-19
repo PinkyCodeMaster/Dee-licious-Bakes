@@ -40,6 +40,20 @@ export interface AccountDeletedData extends BaseEmailData {
   deletionDate: string;
 }
 
+// Cake newsletter welcome email data
+export interface CakeWelcomeEmailData extends BaseEmailData {
+  firstName?: string;
+  email: string;
+  unsubscribeUrl: string;
+}
+
+// Cake newsletter unsubscribe confirmation data
+export interface CakeUnsubscribeConfirmationData extends BaseEmailData {
+  email: string;
+  unsubscribeDate: string;
+  resubscribeUrl?: string;
+}
+
 // Email configuration
 export interface EmailConfig {
   brandName: string;

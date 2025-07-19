@@ -6,7 +6,7 @@ export default function HomeLayout({ children }: Readonly<{
 }>) {
     return (
         <>
-            <SiteHeader />
+            <SiteHeader hideOnLanding={true} />
             <main className="min-h-screen">
                 {children}
             </main>

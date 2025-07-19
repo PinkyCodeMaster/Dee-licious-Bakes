@@ -51,6 +51,8 @@ const EnvSchema = z.object({
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string(),
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
+
+    CAKE_AUDIENCE_ID: z.string()
 });
 
 type Env = z.infer<typeof EnvSchema>;
